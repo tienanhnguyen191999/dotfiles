@@ -1,0 +1,6 @@
+[Desktop Entry]
+Exec=ibus-daemon -drx
+Icon=system-run
+StartupNotify=true
+Terminal=false
+Type=Application

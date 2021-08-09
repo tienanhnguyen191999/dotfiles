@@ -106,3 +106,7 @@ source $ZSH/oh-my-zsh.sh
 
 alias vim="nvim"
 alias reload="source ~/.zshrc"
+# Ibus bamboo Konsole
+GTK_IM_MODULE=ibus
+QT_IM_MODULE=ibus
+XMODIFIERS=@im=ibus
