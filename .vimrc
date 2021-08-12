@@ -44,7 +44,12 @@ set nofixendofline            " Disable auto add end-line
 set autoread                  " Auto update content which is not edited by vim
 set hidden                    " Allow jump to another buffer without saving
 set nowrap                    " Disable wrap text behavior
-set numberwidth=5
+set numberwidth=3             " Set number column's width
+set signcolumn=number         " Sign column Fixed(hard-coded) 2 cell (can not modified)
+                              " => Using sign column using with number column
+set undofile                  " turn on the feature
+set undodir=$HOME/.vim/undo   " directory where the undo files will be stored
+
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -65,12 +70,17 @@ set foldmethod=indent foldnestmax=10 nofoldenable foldlevel=2
 syntax on
 set background=dark
 colorscheme spacecamp
+
 " Showing special characters
 set listchars=eol:¬,tab:→/,trail:~,extends:>,precedes:<,space:·
 set list
 
-"
-"
+" Vertical border
+set fillchars+=vert:\|
+highlight vertsplit guifg=#262626 guibg=#262626
+
+
+
 "------------------- Re-binding and Bind key -------------------
 nnoremap <SPACE> <Nop>
 let mapleader = " "
@@ -99,7 +109,6 @@ nnoremap <C-H> <C-W><C-H>
 
 nnoremap <Leader>, :call MyFunc()<CR>
 let g:NERDSpaceDelims = 1
-let g:node_client_debug = 1
 
 " quick out insert-mode
 inoremap jk <esc>
@@ -116,6 +125,9 @@ nnoremap <C-p>  :Files<Cr>
 nnoremap <space>e :CocCommand explorer<CR>
 nnoremap <space>gp :Git -c push.default=current push<CR>
 
+" use <c-space>for trigger completion
+inoremap <silent><expr> <c-space> coc#refresh()
+
 let g:coc_global_extensions = [
   \ 'coc-tsserver',
   \ 'coc-css',
@@ -129,6 +141,17 @@ let g:coc_global_extensions = [
 \ ]
 
 autocmd VimEnter * let d = expand('%') | if isdirectory(d) | silent! bd | exe 'CocCommand explorer ' | exe 'Startify' | endif
-hi! MatchParen cterm=NONE gui=NONE ctermbg=1 guibg=#fefefe ctermfg=200 guifg=#D70000
+hi! MatchParen cterm=NONE gui=NONE ctermbg=1 guibg=#fefefe ctermfg=200 guifg=#ef0909
 
+" cterm - sets the style
+" ctermfg - set the text color
+" ctermbg - set the highlighting
+" DiffAdd - line was added
+" DiffDelete - line was removed
+" DiffChange - part of the line was changed (highlights the whole line)
+" DiffText - the exact part of the line that changed
+highlight DiffAdd    cterm=bold ctermfg=10  gui=bold guifg=#57ba37 guibg=#262626
+highlight DiffDelete cterm=bold ctermfg=10 ctermbg=17 gui=bold guifg=#ef0909 guibg=#262626
+highlight DiffChange cterm=bold ctermfg=10 ctermbg=16 gui=bold guifg=yellow guibg=#262626
+highlight DiffText   cterm=bold ctermfg=10 ctermbg=88 gui=bold guifg=bg guibg=yellow
 
