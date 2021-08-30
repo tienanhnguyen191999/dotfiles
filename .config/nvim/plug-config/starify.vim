@@ -11,7 +11,7 @@ let g:startify_bookmarks = [
       \ '~/.config',
       \ ]
 let g:startify_change_to_vcs_root = 1
-let g:startify_custom_header = [
+let g:ascii = [
       \ '       ______          __              __       ',
       \ '      /\  _  \        /\ \            /\ \__    ',
       \ '      \ \ \L\ \    ___\ \ \___     ___\ \ ,_\   ',
@@ -20,4 +20,6 @@ let g:startify_custom_header = [
       \ '         \ \_\ \_\ \_\ \_\ \_\ \_\ \_\ \_\ \__\ ',
       \ '          \/_/\/_/\/_/\/_/\/_/\/_/\/_/\/_/\/__/ ',
       \]                                            
+
+let g:startify_custom_header = startify#pad(g:ascii + startify#fortune#boxed())
 

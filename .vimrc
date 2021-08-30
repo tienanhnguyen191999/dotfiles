@@ -26,6 +26,7 @@ Plugin 'honza/vim-snippets'
 Plugin 'mhinz/vim-startify'
 Plugin 'liuchengxu/vim-which-key'
 Plugin 'justinmk/vim-sneak'
+Plugin 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 call vundle#end()             " required
 filetype plugin indent on     " required
 
@@ -44,42 +45,40 @@ set nofixendofline            " Disable auto add end-line
 set autoread                  " Auto update content which is not edited by vim
 set hidden                    " Allow jump to another buffer without saving
 set nowrap                    " Disable wrap text behavior
-set numberwidth=3             " Set number column's width
-set signcolumn=number         " Sign column Fixed(hard-coded) 2 cell (can not modified)
+set numberwidth=4             " Set number column's width
+" set signcolumn=number         " Sign column Fixed(hard-coded) 2 cell (can not modified)
                               " => Using sign column using with number column
 set undofile                  " turn on the feature
 set undodir=$HOME/.vim/undo   " directory where the undo files will be stored
-
-if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-endif
+set cursorline
+hi CursorLine gui=underline cterm=underline
 
 " Tab
 set tabstop=2 shiftwidth=2 expandtab
 autocmd Filetype javascript setlocal ts=4 sw=4 sts=0 expandtab
 autocmd Filetype python setlocal ts=4 sw=4 sts=0 expandtab
 autocmd Filetype php setlocal ts=4 sw=4 sts=0 expandtab
+autocmd Filetype blade setlocal ts=2 sw=2 sts=0 expandtab
 autocmd FileType vim setlocal foldmethod=marker
 
 " Folding
 set foldmethod=indent foldnestmax=10 nofoldenable foldlevel=2 
 
 " syntax highlight
-syntax on
+" syntax on
 set background=dark
 colorscheme spacecamp
 
 " Showing special characters
-set listchars=eol:¬,tab:→/,trail:~,extends:>,precedes:<,space:·
+" set listchars=eol:¬,tab:→/,trail:~
+set listchars=eol:¬,tab:→/,trail:~,space:·
 set list
 
 " Vertical border
 set fillchars+=vert:\|
-highlight vertsplit guifg=#262626 guibg=#262626
-
-
+highlight vertsplit guifg=#262626 guibg=bg ctermbg=None
+highlight LineNr ctermbg=None guibg=None
+highlight CursorLineNR guibg=bg gui=bold
 
 "------------------- Re-binding and Bind key -------------------
 nnoremap <SPACE> <Nop>
@@ -124,9 +123,25 @@ nnoremap <Leader>` :Rg<CR>
 nnoremap <C-p>  :Files<Cr>
 nnoremap <space>e :CocCommand explorer<CR>
 nnoremap <space>gp :Git -c push.default=current push<CR>
-
 " use <c-space>for trigger completion
 inoremap <silent><expr> <c-space> coc#refresh()
+vnoremap <leader>lse y :CocCommand snippets.editSnippets<CR>
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gr <plug>(coc-references)
+
+autocmd VimEnter * let d = expand('%') | if isdirectory(d) | silent! bd | exe 'CocCommand explorer ' | exe 'Startify' | endif
+autocmd BufEnter * if stridx(@%, 'fugitive') != -1 | exec 'setlocal nomodifiable' | endif
+
+" checks if your terminal has 24-bit color support
+if (has("termguicolors"))
+    set termguicolors
+    hi LineNr ctermbg=NONE guibg=NONE
+endif
+
+highlight! MatchParen cterm=NONE gui=NONE ctermbg=1 guibg=#fefefe ctermfg=200 guifg=#ef0909
+highlight WhiteSpace guifg=#3e3d32 guibg=None
+highlight NonText guifg=#3e3d32 guibg=None
+highlight CursorLine guifg=None guibg=#2a2e32
 
 let g:coc_global_extensions = [
   \ 'coc-tsserver',
@@ -135,23 +150,8 @@ let g:coc_global_extensions = [
   \ 'coc-html',
   \ 'coc-phpls',
   \ 'coc-explorer',
-  \ '@yaegassy/coc-intelephense',
   \ 'coc-snippets',
   \ 'coc-highlight',
+  \ 'coc-pyright',
 \ ]
-
-autocmd VimEnter * let d = expand('%') | if isdirectory(d) | silent! bd | exe 'CocCommand explorer ' | exe 'Startify' | endif
-hi! MatchParen cterm=NONE gui=NONE ctermbg=1 guibg=#fefefe ctermfg=200 guifg=#ef0909
-
-" cterm - sets the style
-" ctermfg - set the text color
-" ctermbg - set the highlighting
-" DiffAdd - line was added
-" DiffDelete - line was removed
-" DiffChange - part of the line was changed (highlights the whole line)
-" DiffText - the exact part of the line that changed
-highlight DiffAdd    cterm=bold ctermfg=10  gui=bold guifg=#57ba37 guibg=#262626
-highlight DiffDelete cterm=bold ctermfg=10 ctermbg=17 gui=bold guifg=#ef0909 guibg=#262626
-highlight DiffChange cterm=bold ctermfg=10 ctermbg=16 gui=bold guifg=yellow guibg=#262626
-highlight DiffText   cterm=bold ctermfg=10 ctermbg=88 gui=bold guifg=bg guibg=yellow
 
